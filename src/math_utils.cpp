@@ -1,6 +1,7 @@
 // src/math_utils.cpp
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "math_utils.h"
 
 void physicalMesh(const std::vector<double>& Xc, 
@@ -117,4 +118,62 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
                                    const std::vector<std::vector<double>>& x_py,
                                    const std::vector<std::vector<double>>& y_px,
                                    const std::vector<std::vector<double>>& y_py,
-                                   double gam, char direction);
+                                   double gam, char direction){
+
+    int Nx=U.size();
+    int Ny=U[0].size();
+    std::vector<std::vector<std::vector<double>>> U_p(Nx,std::vector<std::vector<double>>(Ny,std::vector<double>(4,0.0)));
+    std::vector<std::vector<double>> rho(Nx,std::vector<double>(Ny,0.0)); 
+    std::vector<std::vector<double>> m(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> w(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> E(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> u(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> v(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> p(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> c(Nx,std::vector<double>(Ny,0.0));
+
+
+    for(int i=0;i<Nx;i++){
+        for(int j=0;j<Ny;j++){
+            rho[i][j]=U_p[i][j][0]/Jinv[i+3][j+3];
+            m[i][j]=U_p[i][j][1]/Jinv[i+3][j+3];
+            w[i][j]=U_p[i][j][2]/Jinv[i+3][j+3];
+            E[i][j]=U_p[i][j][3]/Jinv[i+3][j+3];
+
+            u[i][j]=m[i][j]/rho[i][j];
+            v[i][j]=w[i][j]/rho[i][j];
+            p[i][j]=(gam-1.0)*(E[i][j]-0.5*rho[i][j]*(u[i][j]*u[i][j]+v[i][j]*v[i][j]));
+            c[i][j]=sqrt(gam*p[i][j]/rho[i][j]);
+        }
+    }
+
+
+    double lambda=0.0;
+
+    if(direction=='x'){
+        for(int i=0;i<Nx;i++){
+            for(int j=0;j<Ny;j++){
+                const double alpha=x_px[i][j]*Jinv[i][j];
+                const double beta=x_py[i][j]*Jinv[i][j];
+                const double eigenvalue1=fabs(alpha*u[i][j]+beta*v[i][j]+c[i][j]*sqrt(alpha*alpha+beta*beta));
+                const double eigenvalue2=fabs(alpha*u[i][j]+beta*v[i][j]-c[i][j]*sqrt(alpha*alpha+beta*beta));
+                lambda =fmax(lambda,fmax(eigenvalue1,eigenvalue2));
+                }
+            }
+        }
+
+    if(direction=='y'){
+        for(int i=0;i<Nx;i++){
+            for(int j=0;j<Ny;j++){
+                const double alpha=y_px[i][j]*Jinv[i][j];
+                const double beta=y_py[i][j]*Jinv[i][j];
+                const double eigenvalue1=fabs(alpha*u[i][j]+beta*v[i][j]+c[i][j]*sqrt(alpha*alpha+beta*beta));
+                const double eigenvalue2=fabs(alpha*u[i][j]+beta*v[i][j]-c[i][j]*sqrt(alpha*alpha+beta*beta));
+                lambda =fmax(lambda,fmax(eigenvalue1,eigenvalue2));
+                }
+            }
+        }
+    return lambda; 
+}
+
+                                   

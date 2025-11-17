@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "src/math_utils.h" 
+#include "src/RK3_WENO_Euler2d.h"
 
 int main(){
 
@@ -14,12 +15,11 @@ int main(){
     int Nx, Ny;
     std::cin >> Nx >> Ny;
     std::cout << "Please specify the desired WENO scheme. (Options: WENO-ZQ, WENO5-JS)" << std::endl;
-    std::string weno_scheme;
-    std::cin >> weno_scheme;
+    std::string method_WENO;
+    std::cin >> method_WENO;
     std::cout<<"Please specify the desired flux splitting method.(Options:LF,LFlocal,SW)"<<std::endl;
-    std::string flux_splitting;
-    std::cin>>flux_splitting;
-
+    std::string method_splitflux;
+    std::cin>>method_splitflux;
     //初始参数，另外注意考虑单精度与双精度的问题
     double gam=1.4;
     //以下两个参数可调，可以多试试
@@ -113,6 +113,8 @@ int main(){
         }
 
         //
+        std::vector<std::vector<std::vector<double>>> U_new(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+        RK3_WENO_Euler2d(U_new,t,dx,dy,dt,U,x_px,x_py,y_px,y_py,Jinv,gam,method_splitflux,method_WENO);
     }
 
 

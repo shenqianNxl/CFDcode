@@ -1,4 +1,6 @@
 // src/math_utils.h
+//Including four functions:   physicalMesh,   uInitialFunc, 
+//  partialdiff_jacobi,   MaxNormEigenvalues_Euler2d
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
