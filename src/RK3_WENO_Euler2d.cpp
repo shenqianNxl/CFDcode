@@ -1,4 +1,6 @@
 #include "RK3_WENO_Euler2d.h"
+#include "TreatBCs_Euler2d.h"
+#include "FluxFunctions_Euler2d.h"
 
 
 void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
@@ -77,4 +79,25 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
             }
         }
     }
+    //处理边界条件
+    std::vector<std::vector<std::vector<double>>> Ub_ax_p(Nx+6, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> Ub_ay_p(Nx, std::vector<std::vector<double>>(Ny+6, std::vector<double>(4,0.0)));
+    TreatBCs_Euler2d(U_p, Ub_ax_p, Ub_ay_p);
+
+    //逐维进行重构
+    //x方向的重构
+    //由于ghost cell的存在，重构后的通量数组需要比原始数组大6个单元
+    //不同重构维度对应不同的通量数组
+    std::vector<std::vector<std::vector<double>>> F_p_x(Nx+6, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> G_p_x(Nx+6, std:: vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    FluxFunctions_Euler2d(Ub_ax_p,F_p_x,G_p_x,gam);
+    //通量分裂
+    //Fluxsplit_x(Ub_ax_p,F_p,G_p,Jinv,x_px,x_py,method_splitflux)；
+
+
+
+    //y方向的重构
+    std::vector<std::vector<std::vector<double>>> F_p_y(Nx, std::vector<std::vector<double>>(Ny+6, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> G_p_y(Nx, std:: vector<std::vector<double>>(Ny+6, std::vector<double>(4,0.0)));
+    FluxFunctions_Euler2d(Ub_ay_p,F_p_y,G_p_y,gam);
 }

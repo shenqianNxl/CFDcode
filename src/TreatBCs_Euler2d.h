@@ -2,7 +2,12 @@
 #define TREATBCS_EULER2D_H
 
 #include <vector>
-void TreatBCs_Euler2d(std::vector<std::vector<std::vector<double>>>& U_p);
+#include <string>
+#include <cmath>
+
+void TreatBCs_Euler2d(std::vector<std::vector<std::vector<double>>>& U_p,
+                        std::vector<std::vector<std::vector<double>>>& Ub_ax,
+                        std::vector<std::vector<std::vector<double>>>& Ub_ay);
 
 
 #endif // TREATBCS_EULER2D_H
