@@ -20,12 +20,12 @@ void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
     int Nx=U.size();
     int Ny=U[0].size();
 
-    std::vector<std::vector<std::vector<double>>> Fhat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    std::vector<std::vector<std::vector<double>>> Ghat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    std::vector<std::vector<std::vector<double>>> F1hat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    std::vector<std::vector<std::vector<double>>> G1hat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    std::vector<std::vector<std::vector<double>>> F2hat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    std::vector<std::vector<std::vector<double>>> G2hat(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> Fhat(Nx+1, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> Ghat(Nx, std::vector<std::vector<double>>(Ny+1, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> F1hat(Nx+1, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> G1hat(Nx, std::vector<std::vector<double>>(Ny+1, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> F2hat(Nx+1, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<std::vector<double>>> G2hat(Nx, std::vector<std::vector<double>>(Ny+1, std::vector<double>(4,0.0)));
     std::vector<std::vector<std::vector<double>>> U1(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
     std::vector<std::vector<std::vector<double>>> U2(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
 
@@ -102,7 +102,6 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
     std::vector<std::vector<std::vector<double>>> Fhat_neg(Nx+1, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
     WENO_FluxPos1d(Fpos_ax,method_WENO,"x",Fhat_pos); //重构flux函数F中的正风向部分
     WENO_FluxNeg1d(Fneg_ax,method_WENO,"x",Fhat_neg); //重构flux函数F中的负风向部分
-    std::vector<std::vector<std::vector<double>>> Fhat(Nx+1, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
     for(int i=0;i<Nx+1;i++){
         for(int j=0;j<Ny;j++){
             for(int k=0;k<4;k++){
@@ -126,7 +125,6 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
     std::vector<std::vector<std::vector<double>>> Ghat_neg(Nx, std::vector<std::vector<double>>(Ny+1, std::vector<double>(4,0.0)));
     WENO_FluxPos1d(Gpos_ay,method_WENO,"y",Ghat_pos);//重构flux函数G中的正风向部分
     WENO_FluxNeg1d(Gneg_ay,method_WENO,"y",Ghat_neg);//重构flux函数G中的负风向部分
-    std::vector<std::vector<std::vector<double>>> Ghat(Nx, std::vector<std::vector<double>>(Ny+1, std::vector<double>(4,0.0)));
     for(int i=0;i<Nx;i++){
         for(int j=0;j<Ny+1;j++){
             for(int k=0;k<4;k++){

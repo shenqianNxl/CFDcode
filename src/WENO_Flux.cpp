@@ -15,7 +15,6 @@ void WENO_FluxPos1d(//输入
         int Ny=Fpos_ax[0].size();
 
         if(recon_direction=="x"){
-            std::vector<std::vector<std::vector<double>>> Fhat_pos(Nx-5,std::vector<std::vector<double>>(Ny,std::vector<double>(4,0.0)));
             for(int i=0;i<Nx-5;i++){
                 for(int j=0;j<Ny;j++){
                     for(int k=0;k<4;k++){
@@ -52,8 +51,6 @@ void WENO_FluxPos1d(//输入
             }   
         }
         else if(recon_direction=="y"){
-            //注意：这种情况下Fpos_ax实际上是Gpos_ay,向y方向重构
-            std::vector<std::vector<std::vector<double>>> Ghat_pos(Nx,std::vector<std::vector<double>>(Ny-5,std::vector<double>(4,0.0)));
             for(int i=0;i<Nx;i++){
                 for(int j=0;j<Ny-5;j++){
                     for(int k=0;k<4;k++){
@@ -113,7 +110,6 @@ void WENO_FluxNeg1d(//输入
         int Ny=Fneg_ax[0].size();
 
         if(recon_direction=="x"){
-            std::vector<std::vector<std::vector<double>>> Fhat_neg(Nx-5,std::vector<std::vector<double>>(Ny,std::vector<double>(4,0.0)));
             for(int i=0;i<Nx-5;i++){
                 for(int j=0;j<Ny;j++){
                     for(int k=0;k<4;k++){
@@ -150,8 +146,6 @@ void WENO_FluxNeg1d(//输入
             }   
         }
         else if(recon_direction=="y"){
-            //注意：这种情况下Fneg_ax实际上是Gneg_ay,向y方向重构
-            std::vector<std::vector<std::vector<double>>> Ghat_neg(Nx,std::vector<std::vector<double>>(Ny-5,std::vector<double>(4,0.0)));
             for(int i=0;i<Nx;i++){
                 for(int j=0;j<Ny-5;j++){
                     for(int k=0;k<4;k++){
@@ -180,7 +174,7 @@ void WENO_FluxNeg1d(//输入
                     double w1=alpha1/alpha_sum;
                     double w2=alpha2/alpha_sum;
                     //计算重构值
-                    Ghat_neg[i][j][k]=w0*( (2.0*Fneg_ax[i][j+5][k]-7.0*Fneg_ax[i][j+4][k]+11.0*Fneg_ax[i][j+3][k])/6.0 )+
+                    Fhat_neg[i][j][k]=w0*( (2.0*Fneg_ax[i][j+5][k]-7.0*Fneg_ax[i][j+4][k]+11.0*Fneg_ax[i][j+3][k])/6.0 )+
                                  w1*( (-Fneg_ax[i][j+4][k]+5.0*Fneg_ax[i][j+3][k]+2.0*Fneg_ax[i][j+2][k])/6.0 )+
                                  w2*( (2.0*Fneg_ax[i][j+3][k]+5.0*Fneg_ax[i][j+2][k]-Fneg_ax[i][j+1][k])/6.0 );
 

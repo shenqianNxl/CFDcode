@@ -1,6 +1,6 @@
 #include "FluxFunctions_Euler2d.h"
 
-void FFluxFunctions_Euler2d(const std::vector<std::vector<std::vector<double>>>& U,
+void FluxFunctions_Euler2d(const std::vector<std::vector<std::vector<double>>>& U,
                     std::vector<std::vector<std::vector<double>>>& F,
                     std::vector<std::vector<std::vector<double>>>& G,
                     double gam){

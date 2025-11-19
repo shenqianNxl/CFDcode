@@ -135,10 +135,13 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
 
     for(int i=0;i<Nx;i++){
         for(int j=0;j<Ny;j++){
-            rho[i][j]=U_p[i][j][0]/Jinv[i+3][j+3];
-            m[i][j]=U_p[i][j][1]/Jinv[i+3][j+3];
-            w[i][j]=U_p[i][j][2]/Jinv[i+3][j+3];
-            E[i][j]=U_p[i][j][3]/Jinv[i+3][j+3];
+            for(int m=0;m<4;m++){
+                U_p[i][j][m] = U[i][j][m]/Jinv[i+3][j+3];
+            }
+            rho[i][j]=U_p[i][j][0];
+            m[i][j]=U_p[i][j][1];
+            w[i][j]=U_p[i][j][2];
+            E[i][j]=U_p[i][j][3];
 
             u[i][j]=m[i][j]/rho[i][j];
             v[i][j]=w[i][j]/rho[i][j];

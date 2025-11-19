@@ -4,6 +4,9 @@
 #include <cmath>
 #include <vector>
 #include <ctime>
+#include <string>
+#include <fstream>
+#include <iomanip>
 
 #include "src/math_utils.h" 
 #include "src/RK3_WENO_Euler2d.h"
@@ -140,6 +143,25 @@ int main(){
             P[i][j]=(gam-1.0)*(E[i][j]-0.5*rho[i][j]*(u[i][j]*u[i][j]+v[i][j]*v[i][j]));
         }
     }
+
+    //输出参数到CSV文件
+    // 设置输出精度
+    std::ofstream file("fluid_data.csv");
+    file << std::fixed << std::setprecision(6);
+    // 写入表头
+    file << "X,Y,rho,u,v,P\n";
+    for (int i = 0; i < Nx; i++) {
+        for (int j = 0; j < Ny; j++) {
+            file << Xc_p[i][j] << ","
+                 << Yc_p[i][j] << ","
+                 << rho[i][j] << ","
+                 << u[i][j] << ","
+                 << v[i][j] << ","
+                 << P[i][j] << "\n";
+        }
+    }
+    file.close();
+    std::cout << "Data saved to fluid_data.csv" << std::endl;
     
 
     std::time_t end = std::time(nullptr); // 记录结束时间
