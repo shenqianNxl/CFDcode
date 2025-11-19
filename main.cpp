@@ -33,7 +33,7 @@ int main(){
     double xmin=0.0, xmax=2.4;
     double ymin=0.0, ymax=4.0;
     const double pi = 3.14159265358979323846;
-    double theta= 3.14159265358979323846/12; //15度折角
+    double theta= pi/12; //15度折角
 
     double dx=(xmax-xmin)/Nx;
     double dy=(ymax-ymin)/Ny;

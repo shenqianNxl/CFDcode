@@ -72,8 +72,8 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
                         std::vector<std::vector<double>>&y_px,
                         std::vector<std::vector<double>>&y_py,
                         std::vector<std::vector<double>>&Jinv){
-    for(int i=0;i<Xc_b.size();i++){
-        for(int j=0;j<Yc_b.size();j++){
+    for(size_t i=0;i<Xc_b.size();i++){
+        for(size_t j=0;j<Yc_b.size();j++){
             px_x[i][j]=1.0;
             px_y[i][j]=0.0;
             py_x[i][j]=(1.0-Yc_b[j]/ymax)*k;
@@ -87,13 +87,13 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
     }
     int Nl=Xc_b.size();
     for(int i=Nl-1;i>=0;i--){
-        if(Xc_b[i]<=1.0){
+        if(Xc_b[i]<=l){
             Nl=i;
             break;
         }
     }
     for(int i=0;i<=Nl;i++){
-        for(int j=0;j<Yc_b.size();j++){
+        for(size_t j=0;j<Yc_b.size();j++){
             px_x[i][j]=1.0;
             px_y[i][j]=0.0;
             py_x[i][j]=0.0;
@@ -105,8 +105,8 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
         }
     }
 
-    for(int i=0;i<Xc_b.size();i++){
-        for(int j=0;j<Yc_b.size();j++){
+    for(size_t i=0;i<Xc_b.size();i++){
+        for(size_t j=0;j<Yc_b.size();j++){
             Jinv[i][j]=y_py[i][j];
         }
     }
