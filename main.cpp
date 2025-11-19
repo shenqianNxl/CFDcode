@@ -82,6 +82,7 @@ int main(){
             Yc_b[j]=Yc[Ny-1]+(j-(Ny+2))*dy;
         }
     }
+
     //网格变换下，物理域与计算域各变量之间的偏导数关系，并计算jacobi矩阵的逆的行列式Jinv
     std::vector<std::vector<double>>px_x(Nx+6,std::vector<double>(Ny+6,0.0));
     std::vector<std::vector<double>>px_y(Nx+6,std::vector<double>(Ny+6,0.0));
@@ -112,12 +113,34 @@ int main(){
             break;
         }
 
-        //
+        //使用三阶Runge-Kutta方法进行时间推进
         std::vector<std::vector<std::vector<double>>> U_new(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
         RK3_WENO_Euler2d(U_new,t,dx,dy,dt,U,x_px,x_py,y_px,y_py,Jinv,gam,method_splitflux,method_WENO);
+        t+=dt;
+        std::cout<<"当前时间t="<<t<<std::endl;
+        U=U_new;
     }
 
-
+    //计算最终的物理量
+    std::vector<std::vector<std::vector<double>>> U_p(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    std::vector<std::vector<double>> rho(Nx, std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> u(Nx, std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> v(Nx, std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> E(Nx, std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> P(Nx, std::vector<double>(Ny,0.0));
+    for(int i=0;i<Nx;i++){
+        for(int j=0;j<Ny;j++){
+            for(int m=0;m<4;m++){
+                U_p[i][j][m]=U[i][j][m]/Jinv[i+3][j+3];
+            }
+            rho[i][j]=U_p[i][j][0];
+            u[i][j]=U_p[i][j][1]/U_p[i][j][0];
+            v[i][j]=U_p[i][j][2]/U_p[i][j][0];
+            E[i][j]=U_p[i][j][3];
+            P[i][j]=(gam-1.0)*(E[i][j]-0.5*rho[i][j]*(u[i][j]*u[i][j]+v[i][j]*v[i][j]));
+        }
+    }
+    
 
     std::time_t end = std::time(nullptr); // 记录结束时间
     double duration = std::difftime(end, start); // 计算时间差，单位为秒
