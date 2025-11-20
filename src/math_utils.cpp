@@ -157,8 +157,8 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
     if(direction=='x'){
         for(int i=0;i<Nx;i++){
             for(int j=0;j<Ny;j++){
-                const double alpha=x_px[i][j]*Jinv[i][j];
-                const double beta=x_py[i][j]*Jinv[i][j];
+                const double alpha=x_px[i+3][j+3]*Jinv[i+3][j+3];
+                const double beta=x_py[i+3][j+3]*Jinv[i+3][j+3];
                 const double eigenvalue1=fabs(alpha*u[i][j]+beta*v[i][j]+c[i][j]*sqrt(alpha*alpha+beta*beta));
                 const double eigenvalue2=fabs(alpha*u[i][j]+beta*v[i][j]-c[i][j]*sqrt(alpha*alpha+beta*beta));
                 lambda =fmax(lambda,fmax(eigenvalue1,eigenvalue2));
@@ -169,8 +169,8 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
     if(direction=='y'){
         for(int i=0;i<Nx;i++){
             for(int j=0;j<Ny;j++){
-                const double alpha=y_px[i][j]*Jinv[i][j];
-                const double beta=y_py[i][j]*Jinv[i][j];
+                const double alpha=y_px[i+3][j+3]*Jinv[i+3][j+3];
+                const double beta=y_py[i+3][j+3]*Jinv[i+3][j+3];
                 const double eigenvalue1=fabs(alpha*u[i][j]+beta*v[i][j]+c[i][j]*sqrt(alpha*alpha+beta*beta));
                 const double eigenvalue2=fabs(alpha*u[i][j]+beta*v[i][j]-c[i][j]*sqrt(alpha*alpha+beta*beta));
                 lambda =fmax(lambda,fmax(eigenvalue1,eigenvalue2));
