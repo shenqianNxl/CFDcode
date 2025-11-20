@@ -7,9 +7,30 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <filesystem>
 
 #include "src/math_utils.h" 
 #include "src/RK3_WENO_Euler2d.h"
+
+
+//调试代码
+// 写二维矩阵到CSV（行: j, 列: i）
+static void write2DCSV(const std::string& filename,
+                       const std::vector<std::vector<double>>& A) {
+    std::ofstream f(filename);
+    f.setf(std::ios::scientific);
+    f << std::setprecision(16);
+    const size_t Nx = A.size();
+    const size_t Ny = Nx ? A[0].size() : 0;
+    for (size_t j = 0; j < Ny; ++j) {
+        for (size_t i = 0; i < Nx; ++i) {
+            f << A[i][j];
+            if (i + 1 < Nx) f << ",";
+        }
+        f << "\n";
+    }
+}
+
 
 int main(){
 
@@ -26,11 +47,11 @@ int main(){
     //初始参数，另外注意考虑单精度与双精度的问题
     double gam=1.4;
     //以下两个参数可调，可以多试试
-    double T=0.05;
+    double T=0.01;
     double CFL=0.6;
     //几何形状
     double l=1.0; //折角处x坐标
-    double xmin=0.0, xmax=4;
+    double xmin=0.0, xmax=4.0;
     double ymin=0.0, ymax=2.4;
     const double pi = 3.14159265358979323846;
     double theta= pi/12; //15度折角
@@ -98,6 +119,19 @@ int main(){
     std::vector<std::vector<double>>Jinv(Nx+6,std::vector<double>(Ny+6,0.0));
     partialdiff_jacobi(Xc_b,Yc_b,tan(theta),l,ymax,px_x,px_y,py_x,py_y,
                         x_px,x_py,y_px,y_py,Jinv);
+
+    //测试代码
+    // 导出 jacobi 相关矩阵
+    std::filesystem::create_directories("output");
+    write2DCSV("output/px_x.csv", px_x);
+    write2DCSV("output/px_y.csv", px_y);
+    write2DCSV("output/py_x.csv", py_x);
+    write2DCSV("output/py_y.csv", py_y);
+    write2DCSV("output/x_px.csv", x_px);
+    write2DCSV("output/x_py.csv", x_py);
+    write2DCSV("output/y_px.csv", y_px);
+    write2DCSV("output/y_py.csv", y_py);
+    write2DCSV("output/Jinv.csv", Jinv);
 
     //时间推进主循环
     std::time_t start = std::time(nullptr); //记录起始时间
@@ -170,3 +204,7 @@ int main(){
 
     return 0;
 }
+
+
+
+

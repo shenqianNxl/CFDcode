@@ -83,7 +83,7 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
             x_px[i][j]=1.0;
             x_py[i][j]=0.0;
             y_px[i][j]=-py_x[i][j]/py_y[i][j];
-            y_py[i][j]=-1.0/py_y[i][j];
+            y_py[i][j]=1.0/py_y[i][j];
         }
     }
     int Nl=Xc_b.size();
