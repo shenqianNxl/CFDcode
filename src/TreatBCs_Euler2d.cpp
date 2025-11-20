@@ -19,6 +19,7 @@ void TreatsBCsLeftRight_Euler(std::vector<std::vector<std::vector<double>>>& Ub_
                               const std::vector<std::vector<std::vector<double>>>& U,
                               const std::string& lefttype,
                               const std::string& righttype){
+    //这里的Nx和Ny是计算网格的尺寸，不包含ghost cell
     int Nx=U.size();
     int Ny=U[0].size();
     for(int i=0;i<Nx;i++){
@@ -44,7 +45,9 @@ void TreatsBCsLeftRight_Euler(std::vector<std::vector<std::vector<double>>>& Ub_
     //右边界
     if(righttype=="supersonicout"){
         for(int i=0;i<3;i++){
-            Ub_ax[Nx+3+i]=U[Nx-1];
+            for(int j=0;j<Ny;j++){
+                Ub_ax[Nx+3+i][j]=U[Nx-1][j];
+            }
         }
     }
 }
@@ -68,10 +71,10 @@ void TreatsBCsBottomUpper_Euler(std::vector<std::vector<std::vector<double>>>& U
         //折角前部分
         for(int i=0;i<bend_index;i++){
             for(int j=0;j<3;j++){
-                Ub_ay[i][j][0]=U[i][3-j][0]; //rho
-                Ub_ay[i][j][1]=U[i][3-j][1]; //rho*u
-                Ub_ay[i][j][2]=-U[i][3-j][2]; //rho*v
-                Ub_ay[i][j][3]=U[i][3-j][3];//E
+                Ub_ay[i][j][0]=U[i][2-j][0]; //rho
+                Ub_ay[i][j][1]=U[i][2-j][1]; //rho*u
+                Ub_ay[i][j][2]=-U[i][2-j][2]; //rho*v
+                Ub_ay[i][j][3]=U[i][2-j][3];//E
             }
         }
         //折角后部分

@@ -70,6 +70,7 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
                              std::vector<std::vector<std::vector<double>>>& Ghat,
                              const std::string& method_splitflux,
                              const std::string& method_WENO){
+    //这里的Nx和Ny是计算网格的尺寸，不包含ghost cell
     int Nx=U.size();
     int Ny=U[0].size();      
     std::vector<std::vector<std::vector<double>>> U_p(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));      
