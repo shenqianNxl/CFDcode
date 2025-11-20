@@ -26,12 +26,12 @@ int main(){
     //初始参数，另外注意考虑单精度与双精度的问题
     double gam=1.4;
     //以下两个参数可调，可以多试试
-    double T=0.1;
+    double T=0.05;
     double CFL=0.6;
     //几何形状
     double l=1.0; //折角处x坐标
-    double xmin=0.0, xmax=2.4;
-    double ymin=0.0, ymax=4.0;
+    double xmin=0.0, xmax=4;
+    double ymin=0.0, ymax=2.4;
     const double pi = 3.14159265358979323846;
     double theta= pi/12; //15度折角
 
@@ -57,7 +57,7 @@ int main(){
     }
     //计算网格变形到物理网格，Xc_p,Yc_p为二维向量，存储物理单元中心坐标
     std::vector<std::vector<double>>Xc_p,Yc_p;
-    physicalMesh(Xc,Yc,tan(theta),ymax,Xc_p,Yc_p);
+    physicalMesh(Xc,Yc,tan(theta),ymax,l,Xc_p,Yc_p);
 
     //初值条件
     double t=0;

@@ -10,7 +10,7 @@
 // 函数声明
 void physicalMesh(const std::vector<double>& Xc, 
                   const std::vector<double>& Yc,
-                  double k, double ymax,
+                  double k, double ymax,double l,
                   std::vector<std::vector<double>>& Xc_p,
                   std::vector<std::vector<double>>& Yc_p);
 

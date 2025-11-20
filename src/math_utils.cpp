@@ -6,7 +6,7 @@
 
 void physicalMesh(const std::vector<double>& Xc, 
                   const std::vector<double>& Yc,
-                  double k, double ymax,
+                  double k, double ymax,double l,
                   std::vector<std::vector<double>>& Xc_p,
                   std::vector<std::vector<double>>& Yc_p) {
     
@@ -21,7 +21,7 @@ void physicalMesh(const std::vector<double>& Xc,
         for (int j = 0; j < Ny; ++j) {
             Xc_p[i][j] = Xc[i];
             
-            if (Xc[i] < 1.0) {
+            if (Xc[i] < l) {
                 Yc_p[i][j] = Yc[j];
             } else {
                 Yc_p[i][j] = Yc[j] + (1.0 - Yc[j] / ymax) * k * (Xc[i] - 1.0);
@@ -72,6 +72,7 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
                         std::vector<std::vector<double>>&y_px,
                         std::vector<std::vector<double>>&y_py,
                         std::vector<std::vector<double>>&Jinv){
+    //Xc_b.size()=Nx+6,Yc_b.size()=Ny+6
     for(size_t i=0;i<Xc_b.size();i++){
         for(size_t j=0;j<Yc_b.size();j++){
             px_x[i][j]=1.0;
