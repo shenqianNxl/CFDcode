@@ -38,7 +38,7 @@ int main(){
     std::cout << "Please input the number of subdivisions for the grid in the x-direction and y-direction." << std::endl;
     int Nx, Ny;
     std::cin >> Nx >> Ny;
-    std::cout << "Please specify the desired WENO scheme. (Options: WENO-ZQ, WENO5-JS)" << std::endl;
+    std::cout << "Please specify the desired WENO scheme. (Options: WENO-JS, WENO-ZQ)" << std::endl;
     std::string method_WENO;
     std::cin >> method_WENO;
     std::cout<<"Please specify the desired flux splitting method.(Options:LF,LFlocal,SW)"<<std::endl;
@@ -47,7 +47,7 @@ int main(){
     //初始参数，另外注意考虑单精度与双精度的问题
     double gam=1.4;
     //以下两个参数可调，可以多试试
-    double T=0.01;
+    double T=0.1;
     double CFL=0.6;
     //几何形状
     double l=1.0; //折角处x坐标
@@ -163,7 +163,7 @@ int main(){
 
         //使用三阶Runge-Kutta方法进行时间推进
         std::vector<std::vector<std::vector<double>>> U_new(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-        RK3_WENO_Euler2d(U_new,t,dx,dy,dt,U,x_px,x_py,y_px,y_py,Jinv,gam,method_splitflux,method_WENO);
+        RK3_WENO_Euler2d(U_new,dx,dy,dt,U,x_px,x_py,y_px,y_py,Jinv,gam,method_splitflux,method_WENO);
         t+=dt;
         std::cout<<"当前时间t="<<t<<std::endl;
         U=U_new;

@@ -6,7 +6,7 @@
 #include <string>
 
 void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
-                      double t, double dx, double dy, double dt,
+                      double dx, double dy, double dt,
                       const std::vector<std::vector<std::vector<double>>>& U,
                       const std::vector<std::vector<double>>& x_px,
                       const std::vector<std::vector<double>>& x_py,
