@@ -120,7 +120,7 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
                                    const std::vector<std::vector<double>>& y_px,
                                    const std::vector<std::vector<double>>& y_py,
                                    double gam, char direction){
-
+    /*U的尺寸是Nx*Ny*4*/
     int Nx=U.size();
     int Ny=U[0].size();
     std::vector<std::vector<std::vector<double>>> U_p(Nx,std::vector<std::vector<double>>(Ny,std::vector<double>(4,0.0)));
@@ -130,7 +130,7 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
     std::vector<std::vector<double>> E(Nx,std::vector<double>(Ny,0.0));
     std::vector<std::vector<double>> u(Nx,std::vector<double>(Ny,0.0));
     std::vector<std::vector<double>> v(Nx,std::vector<double>(Ny,0.0));
-    std::vector<std::vector<double>> p(Nx,std::vector<double>(Ny,0.0));
+    std::vector<std::vector<double>> P(Nx,std::vector<double>(Ny,0.0));
     std::vector<std::vector<double>> c(Nx,std::vector<double>(Ny,0.0));
 
 
@@ -146,8 +146,8 @@ double  MaxNormEigenvalues_Euler2d(const std::vector<std::vector<std::vector<dou
 
             u[i][j]=m[i][j]/rho[i][j];
             v[i][j]=w[i][j]/rho[i][j];
-            p[i][j]=(gam-1.0)*(E[i][j]-0.5*rho[i][j]*(u[i][j]*u[i][j]+v[i][j]*v[i][j]));
-            c[i][j]=sqrt(gam*p[i][j]/rho[i][j]);
+            P[i][j]=(gam-1.0)*(E[i][j]-0.5*rho[i][j]*(u[i][j]*u[i][j]+v[i][j]*v[i][j]));
+            c[i][j]=sqrt(gam*P[i][j]/rho[i][j]);
         }
     }
 

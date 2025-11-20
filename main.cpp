@@ -80,10 +80,11 @@ int main(){
     std::vector<std::vector<double>>Xc_p,Yc_p;
     physicalMesh(Xc,Yc,tan(theta),ymax,l,Xc_p,Yc_p);
 
-    //初值条件
+    //初值条件,U_p为物理网格下的守恒变量
     double t=0;
-    std::vector<std::vector<std::vector<double>>> U(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
-    uInitialFunc(Xc_p,Yc_p,U,gam);
+    std::vector<std::vector<std::vector<double>>> U_p(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    uInitialFunc(Xc_p,Yc_p,U_p,gam);
+    /*U_p的尺寸是Nx*Ny*4*/
 
     //计算边界扩展后的边界点坐标
     std::vector<double> Xc_b(Nx+6,0.0); 
@@ -133,6 +134,16 @@ int main(){
     write2DCSV("output/y_py.csv", y_py);
     write2DCSV("output/Jinv.csv", Jinv);
 
+    //将物理网格下的守恒变量转换到计算网格下
+    std::vector<std::vector<std::vector<double>>> U(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
+    for(int i=0;i<Nx;i++){
+        for(int j=0;j<Ny;j++){
+            for(int m=0;m<4;m++){
+                U[i][j][m]=U_p[i][j][m]*Jinv[i+3][j+3];
+            }
+        }
+    }
+
     //时间推进主循环
     std::time_t start = std::time(nullptr); //记录起始时间
     double lamda1,lamda2;
@@ -159,7 +170,6 @@ int main(){
     }
 
     //计算最终的物理量
-    std::vector<std::vector<std::vector<double>>> U_p(Nx, std::vector<std::vector<double>>(Ny, std::vector<double>(4,0.0)));
     std::vector<std::vector<double>> rho(Nx, std::vector<double>(Ny,0.0));
     std::vector<std::vector<double>> u(Nx, std::vector<double>(Ny,0.0));
     std::vector<std::vector<double>> v(Nx, std::vector<double>(Ny,0.0));
