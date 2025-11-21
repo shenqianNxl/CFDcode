@@ -4,6 +4,7 @@ void FluxFunctions_Euler2d(const std::vector<std::vector<std::vector<double>>>& 
                     std::vector<std::vector<std::vector<double>>>& F,
                     std::vector<std::vector<std::vector<double>>>& G,
                     double gam){
+    //这里的U是在x方向或者y方向上已经处理过边界条件的变量，包含该方向的ghost cell
     int Nx=U.size();
     int Ny=U[0].size();
 

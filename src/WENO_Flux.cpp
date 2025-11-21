@@ -10,7 +10,7 @@ void WENO_FluxPos1d(//输入
         double rec_d1=0.6;
         double rec_d2=0.3;
         double epsilon=1.0e-10;
-
+        //Nx或Ny的值包含了ghost cell
         int Nx=Fpos_ax.size();
         int Ny=Fpos_ax[0].size();
 
@@ -18,7 +18,7 @@ void WENO_FluxPos1d(//输入
             for(int i=0;i<Nx-5;i++){
                 for(int j=0;j<Ny;j++){
                     for(int k=0;k<4;k++){
-                        ///计算三个子模板的光滑指标beta0,beta1,beta2
+                    //计算三个子模板的光滑指标beta0,beta1,beta2
                     double beta0=13.0/12.0*(Fpos_ax[i][j][k]-2.0*Fpos_ax[i+1][j][k]+Fpos_ax[i+2][j][k])*
                                  (Fpos_ax[i][j][k]-2.0*Fpos_ax[i+1][j][k]+Fpos_ax[i+2][j][k])+
                                  1.0/4.0*(Fpos_ax[i][j][k]-4.0*Fpos_ax[i+1][j][k]+3.0*Fpos_ax[i+2][j][k])*
@@ -54,7 +54,8 @@ void WENO_FluxPos1d(//输入
             for(int i=0;i<Nx;i++){
                 for(int j=0;j<Ny-5;j++){
                     for(int k=0;k<4;k++){
-                    ///计算三个子模板的光滑指标beta0,beta1,beta2
+                    //这里的Fpos_ax实际上是Gpos_ay，在y方向上有ghost cell
+                    //计算三个子模板的光滑指标beta0,beta1,beta2
                     double beta0=13.0/12.0*(Fpos_ax[i][j][k]-2.0*Fpos_ax[i][j+1][k]+Fpos_ax[i][j+2][k])*
                                  (Fpos_ax[i][j][k]-2.0*Fpos_ax[i][j+1][k]+Fpos_ax[i][j+2][k])+
                                  1.0/4.0*(Fpos_ax[i][j][k]-4.0*Fpos_ax[i][j+1][k]+3.0*Fpos_ax[i][j+2][k])*
@@ -113,7 +114,7 @@ void WENO_FluxNeg1d(//输入
             for(int i=0;i<Nx-5;i++){
                 for(int j=0;j<Ny;j++){
                     for(int k=0;k<4;k++){
-                        ///计算三个子模板的光滑指标beta0,beta1,beta2
+                    //计算三个子模板的光滑指标beta0,beta1,beta2
                     double beta0=13.0/12.0*(Fneg_ax[i+5][j][k]-2.0*Fneg_ax[i+4][j][k]+Fneg_ax[i+3][j][k])*
                                  (Fneg_ax[i+5][j][k]-2.0*Fneg_ax[i+4][j][k]+Fneg_ax[i+3][j][k])+
                                  1.0/4.0*(Fneg_ax[i+5][j][k]-4.0*Fneg_ax[i+4][j][k]+3.0*Fneg_ax[i+3][j][k])*
