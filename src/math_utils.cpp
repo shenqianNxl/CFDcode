@@ -108,7 +108,7 @@ void partialdiff_jacobi(const std::vector<double>& Xc_b,
 
     for(size_t i=0;i<Xc_b.size();i++){
         for(size_t j=0;j<Yc_b.size();j++){
-            Jinv[i][j]=y_py[i][j];
+            Jinv[i][j]=py_y[i][j];
         }
     }
 }
