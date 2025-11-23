@@ -30,6 +30,31 @@ static void write2DCSV(const std::string& filename,
         f << "\n";
     }
 }
+// 新增：将 U 或 U_p 的四个分量分别输出为二维网格 CSV
+static void dumpUComponents(const std::string& outDir,
+                            const std::string& prefix,
+                            const std::vector<std::vector<std::vector<double>>>& U3) {
+    using std::vector;
+    const size_t Nx = U3.size();
+    const size_t Ny = Nx ? U3[0].size() : 0;
+    vector<vector<double>> c0(Nx, vector<double>(Ny));
+    vector<vector<double>> c1(Nx, vector<double>(Ny));
+    vector<vector<double>> c2(Nx, vector<double>(Ny));
+    vector<vector<double>> c3(Nx, vector<double>(Ny));
+    for (size_t i = 0; i < Nx; ++i) {
+        for (size_t j = 0; j < Ny; ++j) {
+            c0[i][j] = U3[i][j][0]; // rho
+            c1[i][j] = U3[i][j][1]; // rho*u
+            c2[i][j] = U3[i][j][2]; // rho*v
+            c3[i][j] = U3[i][j][3]; // E
+        }
+    }
+    std::filesystem::create_directories(outDir);
+    write2DCSV(outDir + "/" + prefix + "_rho.csv", c0);
+    write2DCSV(outDir + "/" + prefix + "_rhou.csv", c1);
+    write2DCSV(outDir + "/" + prefix + "_rhov.csv", c2);
+    write2DCSV(outDir + "/" + prefix + "_E.csv",   c3);
+}
 
 
 int main(){
@@ -143,6 +168,8 @@ int main(){
             }
         }
     }
+    dumpUComponents("output", "U_final", U);
+    dumpUComponents("output", "U_p_final", U_p);
 
     //时间推进主循环
     std::time_t start = std::time(nullptr); //记录起始时间
