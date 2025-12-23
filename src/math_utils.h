@@ -5,7 +5,13 @@
 #define MATH_UTILS_H
 
 #include <vector>
+//调试函数的声明
+void write2DCSV(const std::string& filename,
+                       const std::vector<std::vector<double>>& A);
 
+void dumpUComponents(const std::string& outDir,
+                            const std::string& prefix,
+                            const std::vector<std::vector<std::vector<double>>>& U3);                      
 
 // 函数声明
 void physicalMesh(const std::vector<double>& Xc, 

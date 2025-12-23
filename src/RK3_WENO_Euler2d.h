@@ -27,5 +27,6 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
                              std::vector<std::vector<std::vector<double>>>& Fhat,
                              std::vector<std::vector<std::vector<double>>>& Ghat,
                              const std::string& method_splitflux,
-                             const std::string& method_WENO);
+                             const std::string& method_WENO,
+                             const std::string& debug_out_dir = "");
 #endif // RK3_WENO_EULER2D_H

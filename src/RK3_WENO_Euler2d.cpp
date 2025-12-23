@@ -3,7 +3,9 @@
 #include "FluxFunctions_Euler2d.h"
 #include "Fluxsplit.h"
 #include "WENO_Flux.h"
-
+#include "math_utils.h"
+#include <iostream>
+#include <string>
 
 void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
                       double dx, double dy, double dt,
@@ -31,7 +33,8 @@ void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
 
 
     //第一阶段
-    Flux_LFsplitBased_Euler2d(U,x_px,x_py,y_px,y_py,Jinv,gam,Fhat,Ghat,method_splitflux,method_WENO);
+    std::string out_dir_s1 = "output/step0/stage1";
+    Flux_LFsplitBased_Euler2d(U,x_px,x_py,y_px,y_py,Jinv,gam,Fhat,Ghat,method_splitflux,method_WENO, out_dir_s1);
     for(int i=0;i<Nx;i++){
         for(int j=0;j<Ny;j++){
             for(int m=0;m<4;m++){
@@ -39,8 +42,12 @@ void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
             }
         }
     }
+    dumpUComponents(out_dir_s1, "U", U);
+    dumpUComponents(out_dir_s1, "U1", U1);
+
     //第二阶段
-    Flux_LFsplitBased_Euler2d(U1,x_px,x_py,y_px,y_py,Jinv,gam,F1hat,G1hat,method_splitflux,method_WENO);
+    std::string out_dir_s2 = "output/step0/stage2";
+    Flux_LFsplitBased_Euler2d(U1,x_px,x_py,y_px,y_py,Jinv,gam,F1hat,G1hat,method_splitflux,method_WENO, out_dir_s2);
     for(int i=0;i<Nx;i++){
         for(int j=0;j<Ny;j++){
             for(int m=0;m<4;m++){
@@ -48,8 +55,13 @@ void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
             }
         }
     }
+    dumpUComponents(out_dir_s2, "U", U);
+    dumpUComponents(out_dir_s2, "U1", U1);
+    dumpUComponents(out_dir_s2, "U2", U2);
+
     //第三阶段
-    Flux_LFsplitBased_Euler2d(U2,x_px,x_py,y_px,y_py,Jinv,gam,F2hat,G2hat,method_splitflux,method_WENO);
+    std::string out_dir_s3 = "output/step0/stage3";
+    Flux_LFsplitBased_Euler2d(U2,x_px,x_py,y_px,y_py,Jinv,gam,F2hat,G2hat,method_splitflux,method_WENO, out_dir_s3);
     for(int i=0;i<Nx;i++){
         for(int j=0;j<Ny;j++){
             for(int m=0;m<4;m++){
@@ -57,6 +69,10 @@ void RK3_WENO_Euler2d(std::vector<std::vector<std::vector<double>>>& Unew,
             }
         }
     }
+    dumpUComponents(out_dir_s3, "U", U);
+    dumpUComponents(out_dir_s3, "U1", U1);
+    dumpUComponents(out_dir_s3, "U2", U2);
+    dumpUComponents(out_dir_s3, "Unew", Unew);
 }
 
 void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double>>>& U,
@@ -69,7 +85,8 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
                              std::vector<std::vector<std::vector<double>>>& Fhat,
                              std::vector<std::vector<std::vector<double>>>& Ghat,
                              const std::string& method_splitflux,
-                             const std::string& method_WENO){
+                             const std::string& method_WENO,
+                             const std::string& debug_out_dir){
     //这里的Nx和Ny是计算网格的尺寸，不包含ghost cell
     int Nx=U.size();
     int Ny=U[0].size();      
@@ -111,8 +128,6 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
         }
     }
 
-
-
     //y方向的重构
     std::vector<std::vector<std::vector<double>>> F_p_y(Nx, std::vector<std::vector<double>>(Ny+6, std::vector<double>(4,0.0)));
     std::vector<std::vector<std::vector<double>>> G_p_y(Nx, std:: vector<std::vector<double>>(Ny+6, std::vector<double>(4,0.0)));
@@ -132,5 +147,24 @@ void  Flux_LFsplitBased_Euler2d(const std::vector<std::vector<std::vector<double
                 Ghat[i][j][k]=Ghat_pos[i][j][k]+Ghat_neg[i][j][k];
             }
         }
+    }
+
+    if (!debug_out_dir.empty()) {
+        std::cout << "Dumping intermediate flux data to " << debug_out_dir << std::endl;
+        dumpUComponents(debug_out_dir, "Ub_ax_p", Ub_ax_p);
+        dumpUComponents(debug_out_dir, "Ub_ay_p", Ub_ay_p);
+        dumpUComponents(debug_out_dir, "F_p_x", F_p_x);
+        dumpUComponents(debug_out_dir, "Fpos_ax", Fpos_ax);
+        dumpUComponents(debug_out_dir, "Fneg_ax", Fneg_ax);
+        dumpUComponents(debug_out_dir, "Fhat_pos", Fhat_pos);
+        dumpUComponents(debug_out_dir, "Fhat_neg", Fhat_neg);
+        dumpUComponents(debug_out_dir, "Fhat", Fhat);
+
+        dumpUComponents(debug_out_dir, "G_p_y", G_p_y);
+        dumpUComponents(debug_out_dir, "Gpos_ay", Gpos_ay);
+        dumpUComponents(debug_out_dir, "Gneg_ay", Gneg_ay);
+        dumpUComponents(debug_out_dir, "Ghat_pos", Ghat_pos);
+        dumpUComponents(debug_out_dir, "Ghat_neg", Ghat_neg);
+        dumpUComponents(debug_out_dir, "Ghat", Ghat);
     }
 }

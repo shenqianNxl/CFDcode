@@ -12,51 +12,6 @@
 #include "src/math_utils.h" 
 #include "src/RK3_WENO_Euler2d.h"
 
-
-//调试代码
-// 写二维矩阵到CSV（行: j, 列: i）
-static void write2DCSV(const std::string& filename,
-                       const std::vector<std::vector<double>>& A) {
-    std::ofstream f(filename);
-    f.setf(std::ios::scientific);
-    f << std::setprecision(16);
-    const size_t Nx = A.size();
-    const size_t Ny = Nx ? A[0].size() : 0;
-    for (size_t j = 0; j < Ny; ++j) {
-        for (size_t i = 0; i < Nx; ++i) {
-            f << A[i][j];
-            if (i + 1 < Nx) f << ",";
-        }
-        f << "\n";
-    }
-}
-// 新增：将 U 或 U_p 的四个分量分别输出为二维网格 CSV
-static void dumpUComponents(const std::string& outDir,
-                            const std::string& prefix,
-                            const std::vector<std::vector<std::vector<double>>>& U3) {
-    using std::vector;
-    const size_t Nx = U3.size();
-    const size_t Ny = Nx ? U3[0].size() : 0;
-    vector<vector<double>> c0(Nx, vector<double>(Ny));
-    vector<vector<double>> c1(Nx, vector<double>(Ny));
-    vector<vector<double>> c2(Nx, vector<double>(Ny));
-    vector<vector<double>> c3(Nx, vector<double>(Ny));
-    for (size_t i = 0; i < Nx; ++i) {
-        for (size_t j = 0; j < Ny; ++j) {
-            c0[i][j] = U3[i][j][0]; // rho
-            c1[i][j] = U3[i][j][1]; // rho*u
-            c2[i][j] = U3[i][j][2]; // rho*v
-            c3[i][j] = U3[i][j][3]; // E
-        }
-    }
-    std::filesystem::create_directories(outDir);
-    write2DCSV(outDir + "/" + prefix + "_rho.csv", c0);
-    write2DCSV(outDir + "/" + prefix + "_rhou.csv", c1);
-    write2DCSV(outDir + "/" + prefix + "_rhov.csv", c2);
-    write2DCSV(outDir + "/" + prefix + "_E.csv",   c3);
-}
-
-
 int main(){
 
     //输入x、y方向的网格划分数目以及WENO格式和通量分裂方法
@@ -72,7 +27,7 @@ int main(){
     //初始参数，另外注意考虑单精度与双精度的问题
     double gam=1.4;
     //以下两个参数可调，可以多试试
-    double T=0.1;
+    double T=1.76287e-5;
     double CFL=0.6;
     //几何形状
     double l=1.0; //折角处x坐标

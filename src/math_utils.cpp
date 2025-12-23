@@ -2,7 +2,54 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <string>
+#include <fstream>
+#include <iomanip>
+#include <filesystem>
 #include "math_utils.h"
+
+//调试代码
+// 写二维矩阵到CSV（行: j, 列: i）
+void write2DCSV(const std::string& filename,
+                       const std::vector<std::vector<double>>& A) {
+    std::ofstream f(filename);
+    f.setf(std::ios::scientific);
+    f << std::setprecision(16);
+    const size_t Nx = A.size();
+    const size_t Ny = Nx ? A[0].size() : 0;
+    for (size_t j = 0; j < Ny; ++j) {
+        for (size_t i = 0; i < Nx; ++i) {
+            f << A[i][j];
+            if (i + 1 < Nx) f << ",";
+        }
+        f << "\n";
+    }
+}
+// 新增：将 U 或 U_p 的四个分量分别输出为二维网格 CSV
+void dumpUComponents(const std::string& outDir,
+                            const std::string& prefix,
+                            const std::vector<std::vector<std::vector<double>>>& U3) {
+    using std::vector;
+    const size_t Nx = U3.size();
+    const size_t Ny = Nx ? U3[0].size() : 0;
+    vector<vector<double>> c0(Nx, vector<double>(Ny));
+    vector<vector<double>> c1(Nx, vector<double>(Ny));
+    vector<vector<double>> c2(Nx, vector<double>(Ny));
+    vector<vector<double>> c3(Nx, vector<double>(Ny));
+    for (size_t i = 0; i < Nx; ++i) {
+        for (size_t j = 0; j < Ny; ++j) {
+            c0[i][j] = U3[i][j][0]; // rho
+            c1[i][j] = U3[i][j][1]; // rho*u
+            c2[i][j] = U3[i][j][2]; // rho*v
+            c3[i][j] = U3[i][j][3]; // E
+        }
+    }
+    std::filesystem::create_directories(outDir);
+    write2DCSV(outDir + "/" + prefix + "_rho.csv", c0);
+    write2DCSV(outDir + "/" + prefix + "_rhou.csv", c1);
+    write2DCSV(outDir + "/" + prefix + "_rhov.csv", c2);
+    write2DCSV(outDir + "/" + prefix + "_E.csv",   c3);
+}
 
 void physicalMesh(const std::vector<double>& Xc, 
                   const std::vector<double>& Yc,
